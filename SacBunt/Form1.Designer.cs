@@ -47,7 +47,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(553, 23);
             this.button2.TabIndex = 14;
-            this.button2.Text = "Import From File";
+            this.button2.Text = "Simulate Games";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -60,7 +60,7 @@
             this.Controls.Add(this.textBoxResult);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "SacBunt";
             this.ResumeLayout(false);
             this.PerformLayout();
 
