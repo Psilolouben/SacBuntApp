@@ -20,17 +20,18 @@ namespace SacBunt
             InitializeComponent();
         }
 
-       
+
         private void CalculateValues(double homeERA, double awayERA, int homeRuns, int awayRuns, int homeGames, int awayGames, string homeTeam, string awayTeam, List<int> homeSDEV = null, List<int> awaySDEV = null, List<int> homeHitsStdDev = null, List<int> awayHitsStdDev = null)
         {
             var games = new List<Tuple<double, double>>();
             var roundedGames = new List<Tuple<int, int>>();
 
+            //Number of simulations per game
             var N = 1000000;
 
             for (int i = 0; i < N; i++)
             {
-                // Random rand = new Random(counter);//reuse this if you are generating many
+                //Generate seed
                 var seed = System.DateTime.Now.ToFileTime() + i;
                 var mySimpleRng = new SimpleRNGNew();
                 mySimpleRng.SetSeed((uint)(seed >> 16), (uint)(seed % 4294967296));
@@ -42,6 +43,7 @@ namespace SacBunt
                 var homeHits_STDDEV = default(double);
                 var awayHitS_TDDEV = default(double);
 
+                #region " Calculate Standard Deviatons"
                 foreach (var h in homeSDEV)
                     homeSTDDEV += Math.Abs(Math.Pow(h - homeERA, 2)) / homeSDEV.Count;
 
@@ -62,6 +64,9 @@ namespace SacBunt
 
                 awayHitS_TDDEV = Math.Sqrt(awayHitS_TDDEV);
 
+                #endregion
+
+                #region " Generate Random Numbers"
                 double[,] U = new double[4, 1];
 
                 //for (int j = 0; j < 6; j++)
@@ -70,17 +75,15 @@ namespace SacBunt
                 U[2, 0] = Convert.ToInt32(mySimpleRng.GetNormal(homeERA, homeSTDDEV));
                 U[3, 0] = Convert.ToInt32(mySimpleRng.GetNormal(awayERA, awaySTDDEV));
 
+                #endregion
 
-                // var S_Home = (((homeRuns / homeGames) + awayERA) / 2);
-                //var S_Away = (((awayRuns / awayGames) + homeERA) / 2);
-                //var homeScore = (homeRuns / homeGames) + ((homeRuns / homeGames) * homeFactor * U[0, 0]);
                 var homeScore = Convert.ToInt32((U[0, 0] + U[3, 0]) / 2);
                 var awayScore = Convert.ToInt32((U[1, 0] + U[2, 0]) / 2);
-                //var awayScore = (awayRuns / awayGames) + ((awayRuns / awayGames) * awayFactor * U[1, 0]);
 
                 games.Add(new Tuple<double, double>(Math.Abs(homeScore), Math.Abs(awayScore)));
             }
-            //Project Game
+
+            #region " Retrieve Stats"
             var isRoundUp = false;
             foreach (var game in games)
             {
@@ -96,26 +99,57 @@ namespace SacBunt
             var awayWins = roundedGames.Count(sd => sd.Item1 < sd.Item2);
 
             var totalRunsPerGame = roundedGames.Select(sd => sd.Item1 + sd.Item2);
-
+            var over7hPerc = ((double)totalRunsPerGame.Count(sd => sd >= 7) / roundedGames.Count) * 100;
+            var over75hPerc = ((double)totalRunsPerGame.Count(sd => sd > 7.5) / roundedGames.Count) * 100;
+            var over8hPerc = ((double)totalRunsPerGame.Count(sd => sd >= 8) / roundedGames.Count) * 100;
             var over85hPerc = ((double)totalRunsPerGame.Count(sd => sd > 8.5) / roundedGames.Count) * 100;
             var over95hPerc = ((double)totalRunsPerGame.Count(sd => sd > 9.5) / roundedGames.Count) * 100;
             var over9hPerc = ((double)totalRunsPerGame.Count(sd => sd >= 9) / roundedGames.Count) * 100;
             var over105hPerc = ((double)totalRunsPerGame.Count(sd => sd > 10.5) / roundedGames.Count) * 100;
             var over10hPerc = ((double)totalRunsPerGame.Count(sd => sd >= 10) / roundedGames.Count) * 100;
-            var over75hPerc = ((double)totalRunsPerGame.Count(sd => sd > 7.5) / roundedGames.Count) * 100;
             var over11hPerc = ((double)totalRunsPerGame.Count(sd => sd >= 11) / roundedGames.Count) * 100;
+            var over115hPerc = ((double)totalRunsPerGame.Count(sd => sd > 11) / roundedGames.Count) * 100;
+            var over12hPerc = ((double)totalRunsPerGame.Count(sd => sd >= 12) / roundedGames.Count) * 100;
+            var over125hPerc = ((double)totalRunsPerGame.Count(sd => sd > 12) / roundedGames.Count) * 100;
 
             var homeWinsPerc = (double)homeWins / roundedGames.Count;
             var awayWinsPerc = (double)awayWins / roundedGames.Count;
 
 
 
-            this.textBoxResult.Text += homeTeam + ": " + Math.Round(homeWinsPerc, 2) * 100 + " % " + awayTeam + ": " + Math.Round(awayWinsPerc, 2) * 100 + "% " + Environment.NewLine + "    " + " Over 7.5: " + Math.Round(over75hPerc, 2) + "% " + Environment.NewLine + "    " + " Over 8.5: " + Math.Round(over85hPerc, 2) + "% " + Environment.NewLine + "    " + " Over 9: " + Math.Round(over9hPerc, 2) + "% " + Environment.NewLine + "    " + "Over 9.5: " + Math.Round(over95hPerc, 2) + "% " + Environment.NewLine + "    " + "Over 10: " + Math.Round(over10hPerc, 2) + "% " + Environment.NewLine + "    " + "Over 10.5: " + Math.Round(over105hPerc, 2) + "%" + Environment.NewLine + "    " + "Over 11: " + Math.Round(over11hPerc, 2) + "%" + Environment.NewLine;
+            this.textBoxResult.Text += homeTeam + ": " + Math.Round(homeWinsPerc, 2) * 100 + " % " + awayTeam + ": " + Math.Round(awayWinsPerc, 2) * 100 + "% " + Environment.NewLine + "    "
+                 + " Over 7: " + Math.Round(over7hPerc, 2) + "% " + Environment.NewLine + "    "
+                + " Over 7.5: " + Math.Round(over75hPerc, 2) + "% " + Environment.NewLine + "    "
+                + " Over 8: " + Math.Round(over8hPerc, 2) + "% " + Environment.NewLine + "    "
+                + " Over 8.5: " + Math.Round(over85hPerc, 2) + "% " + Environment.NewLine + "    "
+                + " Over 9: " + Math.Round(over9hPerc, 2) + "% " + Environment.NewLine + "    "
+                + "Over 9.5: " + Math.Round(over95hPerc, 2) + "% " + Environment.NewLine + "    "
+                + "Over 10: " + Math.Round(over10hPerc, 2) + "% " + Environment.NewLine + "    "
+                + "Over 10.5: " + Math.Round(over105hPerc, 2) + "%" + Environment.NewLine + "    "
+                + "Over 11: " + Math.Round(over11hPerc, 2) + "%" + Environment.NewLine + "    "
+                 + "Over 11.5: " + Math.Round(over115hPerc, 2) + "%" + Environment.NewLine + "    "
+                  + "Over 12: " + Math.Round(over125hPerc, 2) + "%" + Environment.NewLine + "    "
+                   + "Over 12.5: " + Math.Round(over125hPerc, 2) + "%" + Environment.NewLine + "    ";
 
-            AppendResultToTextFile(homeTeam + ": " + Math.Round(homeWinsPerc, 2) * 100 + " % " + awayTeam + ": " + Math.Round(awayWinsPerc, 2) * 100 + "% " + Environment.NewLine + "    " + " Over 7.5: " + Math.Round(over75hPerc, 2) + "% " + Environment.NewLine + "    " + " Over 8.5: " + Math.Round(over85hPerc, 2) + "% " + Environment.NewLine + "    " + " Over 9: " + Math.Round(over9hPerc, 2) + "% " + Environment.NewLine + "    " + "Over 9.5: " + Math.Round(over95hPerc, 2) + "% " + Environment.NewLine + "    " + "Over 10: " + Math.Round(over10hPerc, 2) + "% " + Environment.NewLine + "    " + "Over 10.5: " + Math.Round(over105hPerc, 2) + "%" + Environment.NewLine + "    " + "Over 11: " + Math.Round(over11hPerc, 2) + "%" + Environment.NewLine);
+            AppendResultToTextFile(homeTeam + ": " + Math.Round(homeWinsPerc, 2) * 100 + " % " + awayTeam + ": " + Math.Round(awayWinsPerc, 2) * 100 + "% " + Environment.NewLine + "    "
+                 + " Over 7: " + Math.Round(over7hPerc, 2) + "% " + Environment.NewLine + "    "
+                + " Over 7.5: " + Math.Round(over75hPerc, 2) + "% " + Environment.NewLine + "    "
+                + " Over 8: " + Math.Round(over8hPerc, 2) + "% " + Environment.NewLine + "    "
+                + " Over 8.5: " + Math.Round(over85hPerc, 2) + "% " + Environment.NewLine + "    "
+                + " Over 9: " + Math.Round(over9hPerc, 2) + "% " + Environment.NewLine + "    "
+                + "Over 9.5: " + Math.Round(over95hPerc, 2) + "% " + Environment.NewLine + "    "
+                + "Over 10: " + Math.Round(over10hPerc, 2) + "% " + Environment.NewLine + "    "
+                + "Over 10.5: " + Math.Round(over105hPerc, 2) + "%" + Environment.NewLine + "    "
+                + "Over 11: " + Math.Round(over11hPerc, 2) + "%" + Environment.NewLine
+                 + "Over 11.5: " + Math.Round(over115hPerc, 2) + "%" + Environment.NewLine + "    "
+                  + "Over 12: " + Math.Round(over125hPerc, 2) + "%" + Environment.NewLine + "    "
+                   + "Over 12.5: " + Math.Round(over125hPerc, 2) + "%" + Environment.NewLine + "    ");
+
+            #endregion
         }
 
 
+        #region "Helper Methods"
         private List<T> GetStat<T>(Helpers.SearchType type, string id = "", DateTime date = default(DateTime))
         {
             int year, month, day;
@@ -361,5 +395,7 @@ namespace SacBunt
 
 
         }
+        #endregion
+
     }
 }

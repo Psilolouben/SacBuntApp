@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.textBoxResult = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.simulateBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBoxResult
@@ -41,22 +41,22 @@
             this.textBoxResult.Size = new System.Drawing.Size(555, 382);
             this.textBoxResult.TabIndex = 12;
             // 
-            // button2
+            // simulateBtn
             // 
-            this.button2.Location = new System.Drawing.Point(12, 12);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(553, 23);
-            this.button2.TabIndex = 14;
-            this.button2.Text = "Simulate Games";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.simulateBtn.Location = new System.Drawing.Point(12, 12);
+            this.simulateBtn.Name = "simulateBtn";
+            this.simulateBtn.Size = new System.Drawing.Size(553, 23);
+            this.simulateBtn.TabIndex = 14;
+            this.simulateBtn.Text = "Simulate Games";
+            this.simulateBtn.UseVisualStyleBackColor = true;
+            this.simulateBtn.Click += new System.EventHandler(this.button2_Click);
             // 
             // MainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(580, 435);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.simulateBtn);
             this.Controls.Add(this.textBoxResult);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "MainFrm";
@@ -68,7 +68,7 @@
 
         #endregion
         private System.Windows.Forms.TextBox textBoxResult;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button simulateBtn;
     }
 }
 
