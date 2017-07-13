@@ -20,11 +20,7 @@ namespace SacBunt
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            CalculateValues(Convert.ToDouble(this.textBoxHomeERA.Text), Convert.ToDouble(this.textBoxAwayERA.Text), Convert.ToInt32(this.textBoxHomeRuns.Text), Convert.ToInt32(this.textBoxAwayRuns.Text), Convert.ToInt32(this.textBoxHomeGames.Text), Convert.ToInt32(this.textBoxAwayGames.Text), this.textBoxHomeTeam.Text, this.textBoxAwayTeam.Text);
-        }
-
+       
         private void CalculateValues(double homeERA, double awayERA, int homeRuns, int awayRuns, int homeGames, int awayGames, string homeTeam, string awayTeam, List<int> homeSDEV = null, List<int> awaySDEV = null, List<int> homeHitsStdDev = null, List<int> awayHitsStdDev = null)
         {
             var games = new List<Tuple<double, double>>();
