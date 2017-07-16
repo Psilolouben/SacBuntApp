@@ -184,6 +184,8 @@ namespace SacBunt
 
 
 
+                    if (games == null)
+                        return (List<T>)Convert.ChangeType(new List<Helpers.BaseballGame>(), typeof(List<T>));
 
                     foreach (var gm in games)
                     {
